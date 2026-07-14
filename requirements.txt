@@ -1,0 +1,5 @@
+qrcode==8.2
+pandas==3.0.3
+pillow==12.3.0
+streamlit==1.59.2
+matplotlib==3.11.0
