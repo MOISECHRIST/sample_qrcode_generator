@@ -4,3 +4,21 @@ When you upload your file, the app will generate QR codes for each sample ID wit
 
 **NOTE:** For CSV files, make sure that the separator is a `comma (,)`, not a `semicolon (;)`.
 For TSV files, make sure that the separator is a `tab`.
+
+## Installation 
+
+```{bash}
+git clone https://github.com/MOISECHRIST/sample_qrcode_generator.git
+cd sample_qrcode_generator
+python -m venv ,venv
+source .venv/bin/activate 
+pip install -r requirements.txt
+```
+
+## Run the app
+
+```{bash}
+streamlit run main.py
+```
+
+The app is also available online through the link : https://sampleqrcodegenerator-tqqdgxlpvu6kugk3fxy2h7.streamlit.app/
