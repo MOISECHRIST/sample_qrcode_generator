@@ -1,5 +1,6 @@
 import io
 import math
+from datetime import datetime
 import qrcode
 import pandas as pd 
 import streamlit as st 
@@ -108,7 +109,7 @@ For TSV files, make sure that the separator is a `tab`.
                         st.download_button(
                             label="Download All QR Codes as PDF",
                             data=st.session_state.pdf_data,
-                            file_name="Sample_QRCodes.pdf",
+                            file_name=f"Sample_QRCodes{datetime.now()}.pdf",
                             mime="application/pdf",
                             type="primary", icon="📄"
                         )
