@@ -11,7 +11,13 @@ from pathlib import Path
 LIST_EXTENSIONS = ['csv', 'tsv', 'txt']
 SEPARATORS = {'comma': ',', 'tab': '\t'}
 
-def generate_pdf(qrcodes, labels, num_per_row=3, rows_per_page=4):
+def wipe_everything():
+    """
+    Clear the Streamlit session state.
+    """
+    st.session_state.clear()
+
+def generate_pdf(qrcodes, labels, num_per_row=3, rows_per_page=4, display_sample_ID=True):
     """Generates the PDF only when triggered."""
     pdf_buffer = io.BytesIO()
     
@@ -28,7 +34,8 @@ def generate_pdf(qrcodes, labels, num_per_row=3, rows_per_page=4):
                 idx = p * imgs_per_page + i
                 if idx < nb_imgs:
                     ax.imshow(qrcodes[idx].get_image(), cmap='gray')
-                    ax.set_title(labels[idx], fontsize=10)
+                    if display_sample_ID:
+                        ax.set_title(labels[idx], fontsize=10)
                 ax.axis('off')
                 
             plt.tight_layout()
@@ -56,8 +63,7 @@ For TSV files, make sure that the separator is a `tab`.
     uploaded_file = st.sidebar.file_uploader(
         "Upload your file with only one column with sample IDs as explained above.", 
         type=LIST_EXTENSIONS, 
-        accept_multiple_files=False
-    )
+        accept_multiple_files=False, on_change=wipe_everything)
 
     if uploaded_file is not None:
         file_extension = Path(uploaded_file.name).suffix.replace(".", "").lower()
@@ -76,7 +82,7 @@ For TSV files, make sure that the separator is a `tab`.
         if 'sample_ID' in sample_data.columns:
             num_per_row = st.sidebar.select_slider(label="Number of images per row", options=range(1, 31), value=10)
             num_qrcode_per_page = st.sidebar.select_slider(label="Number of images per PDF page", options=range(1, 31), value=12)
-            
+            display_sample_id = st.sidebar.checkbox("Print sample ID above QRcode", value=True)
             tab1, tab2 = st.tabs(["Data Preview", "QR code"])
             
             with tab1:
@@ -95,8 +101,7 @@ For TSV files, make sure that the separator is a `tab`.
                     if st.button("Prepare PDF for Download"):
                         with st.spinner("Generating PDF... Please wait."):
                             st.session_state.pdf_data = generate_pdf(
-                                qrcodes, labels, num_per_row=num_per_row, rows_per_page=num_qrcode_per_page
-                            )
+                                qrcodes, labels, num_per_row=num_per_row, rows_per_page=num_qrcode_per_page, display_sample_ID=display_sample_id)
                             st.session_state.pdf_ready = True
                 with c2:
                     if st.session_state.pdf_ready:
